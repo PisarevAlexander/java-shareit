@@ -88,18 +88,18 @@ public class ItemServiceImpl implements ItemService {
             for (ItemDto itemDto : itemsDto) {
                 Booking lastBooking = bookings.stream()
                         .sorted(Comparator.comparing(Booking::getStart).reversed())
-                        .filter(b -> b.getStart().isBefore(localDateTime) && b.getItem().getId() == itemDto.getId())
+                        .filter(b -> b.getStart().isBefore(localDateTime) && b.getItem().getId().equals(itemDto.getId()))
                         .findFirst()
                         .orElse(null);
 
                 Booking nextBooking = bookings.stream()
                         .sorted(Comparator.comparing(Booking::getStart))
-                        .filter(b -> b.getStart().isAfter(localDateTime) && b.getItem().getId() == itemDto.getId())
+                        .filter(b -> b.getStart().isAfter(localDateTime) && b.getItem().getId().equals(itemDto.getId()))
                         .findFirst()
                         .orElse(null);
 
                 List<Comment> itemCommits = comments.stream()
-                        .filter(comment -> comment.getItem().getId() == itemDto.getId())
+                        .filter(comment -> comment.getItem().getId().equals(itemDto.getId()))
                         .collect(Collectors.toList());
 
                 itemDto.setComments(itemCommits);
