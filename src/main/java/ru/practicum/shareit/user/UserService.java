@@ -1,41 +1,16 @@
 package ru.practicum.shareit.user;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.ConflictException;
-import ru.practicum.shareit.exception.NotFoundException;
-
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class UserService {
+public interface UserService {
 
-    private final UserStorage userStorage;
+    User create(UserDto userDto);
 
-    public User create(UserDto userDto) {
-        return userStorage.create(userDto)
-                .orElseThrow(() -> new ConflictException("Пользователь " + userDto + " уже существует"));
-    }
+    User getById(long userId);
 
-    public User getById(long userId) {
-        return userStorage.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Id " + userId + " не найден"));
-    }
+    List<User> getAll();
 
-    public List<User> getAll() {
-        return userStorage.fndAll();
-    }
+    User update(UserDto userDto, long userId);
 
-    public User update(UserDto userDto, long userId) {
-        User updatedUser = userStorage.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Id " + userId + " не найден"));
-
-        return userStorage.update(userId, userDto)
-                .orElseThrow(() -> new ConflictException("Пользователь " + updatedUser + " уже существует"));
-    }
-
-    public void delete(long userId) {
-        userStorage.delete(userId);
-    }
+    void delete(long userId);
 }

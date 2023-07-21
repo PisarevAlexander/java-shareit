@@ -43,9 +43,16 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBadRequestException(final BadRequestException e) {
+        log.warn(e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleThrowable(final Throwable e) {
-        log.warn("Произошла непредвиденная ошибка.");
+        log.warn(e.getMessage());
         return new ErrorResponse("Произошла непредвиденная ошибка.");
     }
 }
