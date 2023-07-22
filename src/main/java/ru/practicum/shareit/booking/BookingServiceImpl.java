@@ -6,9 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.Item;
-import ru.practicum.shareit.item.ItemRepository;
+import ru.practicum.shareit.item.ItemService;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.user.UserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,16 +19,14 @@ import java.util.List;
 public class BookingServiceImpl implements BookingService {
 
     public final BookingRepository bookingRepository;
-    public final UserRepository userRepository;
-    public final ItemRepository itemRepository;
+    public final UserService userService;
+    public final ItemService itemService;
 
     @Override
     @Transactional
     public Booking create(BookingDto bookingDto, long userId) {
-        User user = userRepository.findUserById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь с Id " + userId + " не найден"));
-        Item item = itemRepository.findItemById(bookingDto.getItemId())
-                .orElseThrow(() -> new NotFoundException("Предмет с Id " + bookingDto.getItemId() + " не найден"));
+        User user = userService.getById(userId);
+        Item item = itemService.getItemById(bookingDto.getItemId());
 
         if (user.getId() == item.getOwner()) {
             throw new NotFoundException("Пользователь не может забронировать свой предмет");
@@ -46,9 +44,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public Booking update(long bookingId, boolean approved, long userId) {
-        userRepository.findUserById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь с Id " + userId + " не найден"));
-
+        userService.getById(userId);
         Booking booking = bookingRepository.findBookingById(bookingId)
                 .orElseThrow(() -> new NotFoundException("Бронь с Id " + bookingId + " не найден"));
 
@@ -58,11 +54,7 @@ public class BookingServiceImpl implements BookingService {
             throw new BadRequestException("Бронь с Id " + bookingId + " уже подтверждена");
         }
 
-        if (approved) {
-            booking.setStatus(Status.APPROVED);
-        } else {
-            booking.setStatus(Status.REJECTED);
-        }
+        booking.setStatus(approved ? Status.APPROVED : Status.REJECTED);
         return bookingRepository.save(booking);
     }
 
@@ -81,8 +73,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional(readOnly = true)
     public List<Booking> getAllUserBooking(long userId, String state) {
-        userRepository.findUserById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь с Id " + userId + " не найден"));
+        userService.getById(userId);
 
         switch (state) {
             case "ALL":
@@ -106,8 +97,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional(readOnly = true)
     public List<Booking> getAllOwnerBooking(long userId, String state) {
-        userRepository.findUserById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь с Id " + userId + " не найден"));
+        userService.getById(userId);
 
         switch (state) {
             case "ALL":
