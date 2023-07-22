@@ -7,6 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ShareItApp {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ShareItApp.class, args);
+		SpringApplication application =
+				new SpringApplication(ShareItApp.class);
+		application.setAdditionalProfiles("test");
+		application.run(args);
 	}
 }
