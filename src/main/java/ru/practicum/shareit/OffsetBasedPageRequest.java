@@ -4,6 +4,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class OffsetBasedPageRequest implements Pageable, Serializable {
 
@@ -95,4 +96,8 @@ public class OffsetBasedPageRequest implements Pageable, Serializable {
         return new OffsetBasedPageRequest(pageNumber * getPageSize(), getPageSize(), getSort());
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(limit, offset, sort);
+    }
 }
