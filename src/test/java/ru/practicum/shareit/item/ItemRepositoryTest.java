@@ -65,8 +65,8 @@ class ItemRepositoryTest {
 
     @Test
     void findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableTrue() {
-        List<Item> items = itemRepository.
-                findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableTrue(item.getName(),
+        List<Item> items = itemRepository
+                .findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableTrue(item.getName(),
                         item.getName(), new OffsetBasedPageRequest(0, 1));
 
         assertEquals(1, items.size());

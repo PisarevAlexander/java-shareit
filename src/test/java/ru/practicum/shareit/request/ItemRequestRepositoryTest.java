@@ -58,8 +58,8 @@ class ItemRequestRepositoryTest {
 
     @Test
     void findAllByUserNot() {
-        Page<ItemRequest> itemsRequest  = repository.
-                findAllByUserNot(user.getId() + 1, new OffsetBasedPageRequest(0, 1));
+        Page<ItemRequest> itemsRequest  = repository
+                .findAllByUserNot(user.getId() + 1, new OffsetBasedPageRequest(0, 1));
 
         assertEquals(List.of(itemRequest), itemsRequest.getContent());
     }

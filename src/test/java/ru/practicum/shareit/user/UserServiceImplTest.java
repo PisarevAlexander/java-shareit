@@ -44,17 +44,17 @@ class UserServiceImplTest {
 
     @Test
     void getById_whenUserFound_thenReturnUser() {
-        when(repository.findUserById(1l))
+        when(repository.findUserById(1L))
                 .thenReturn(Optional.of(user));
 
-        User actualUser = userService.getById(1l);
+        User actualUser = userService.getById(1L);
 
         assertEquals(user, actualUser);
     }
 
     @Test
     void getById_whenUserNotFound_thenReturnException() {
-        when(repository.findUserById(2l))
+        when(repository.findUserById(2L))
                 .thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> userService.getById(2L));
@@ -73,7 +73,7 @@ class UserServiceImplTest {
 
     @Test
     void update_whenUserNotFound_thenReturnException() {
-        when(repository.findUserById(2l))
+        when(repository.findUserById(2L))
                 .thenReturn(Optional.empty());
 
         verify((repository), never()).save(user);
@@ -83,7 +83,7 @@ class UserServiceImplTest {
     @Test
     void update_whenUserChange_thenReturnChangedUser() {
         UserDto changedUser = new UserDto("test1", "test1@gmail.com");
-        when(repository.findUserById(1l))
+        when(repository.findUserById(1L))
                 .thenReturn(Optional.of(user));
         when((repository.save(user)))
                 .thenReturn(user);

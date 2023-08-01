@@ -145,8 +145,8 @@ class ItemServiceImplTest {
 
     @Test
     void search() {
-        when(itemRepository.
-                findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableTrue("test",
+        when(itemRepository
+                .findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableTrue("test",
                         "test", new OffsetBasedPageRequest(1, 1)))
                 .thenReturn(List.of(item));
 
