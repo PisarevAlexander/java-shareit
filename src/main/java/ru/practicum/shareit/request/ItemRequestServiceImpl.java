@@ -95,7 +95,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
                 if (!items.isEmpty()) {
                     for (Item item : items) {
-                        if (item.getRequestId() == itemRequestDto.getId()) {
+                        if (item.getRequestId().equals(itemRequestDto.getId())) {
                             itemRequestDto.addRequestItem(ItemMapper.toItemForRequestDto(item));
                         }
                     }
