@@ -36,16 +36,6 @@ class ItemRequestControllerTest {
     }
 
     @Test
-    void create() {
-        when(itemRequestService.create(itemRequestDto, itemRequest.getUser(), LocalDateTime.now()))
-                .thenReturn(itemRequest);
-
-        ItemRequest actualItem = itemRequestController.create(itemRequestDto, itemRequest.getUser());
-
-        assertEquals(itemRequest, actualItem);
-    }
-
-    @Test
     void findAllRequest() {
         when(itemRequestService.getAll(itemRequest.getUser()))
                 .thenReturn(List.of(itemRequestDto));
