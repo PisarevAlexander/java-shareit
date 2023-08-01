@@ -1,8 +1,10 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.OffsetBasedPageRequest;
 import ru.practicum.shareit.booking.*;
 import ru.practicum.shareit.comment.Comment;
 import ru.practicum.shareit.comment.CommentDto;
@@ -12,6 +14,8 @@ import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.UserService;
 
+import java.time.Clock;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -81,9 +85,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ItemDto> getAll(long userId) {
+    public List<ItemDto> getAll(long userId, int from, int size) {
         List<ItemDto> itemsDto = new ArrayList<>();
-        List<Item> items = itemRepository.findAllByOwner(userId);
+        Pageable pageable = new OffsetBasedPageRequest(from, size);
+        List<Item> items = itemRepository.findAllByOwner(userId, pageable);
         for (Item item : items) {
             itemsDto.add(ItemMapper.toItemDto(item));
         }
@@ -147,20 +152,22 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Item> search(String text) {
+    public List<Item> search(String text, int from, int size) {
         if (text.isBlank()) {
             return new ArrayList<>();
         }
-        return itemRepository.findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableTrue(text, text);
+        Pageable pageable = new OffsetBasedPageRequest(from, size);
+        return itemRepository.findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableTrue(text,
+                text, pageable);
     }
 
     @Override
     @Transactional
-    public Comment saveCommit(CommentDto commentDto, long itemId, long userId) {
+    public Comment saveCommit(CommentDto commentDto, long itemId, long userId, LocalDateTime localDateTime) {
         Item item = itemRepository.findItemById(itemId)
                 .orElseThrow(() -> new NotFoundException("Предмета с id " + itemId + " не существует"));
         List<Booking> bookings = bookingRepository.findBookingByBooker_IdAndItem_IdAndAndEndBefore(userId, itemId,
-                LocalDateTime.now());
+                localDateTime);
 
         if (bookings.isEmpty()) {
             throw new BadRequestException("Не верный " + itemId + " или " + userId);
@@ -168,8 +175,8 @@ public class ItemServiceImpl implements ItemService {
 
         Comment comment = CommentMapper.toComment(commentDto);
         comment.setItem(item);
-        comment.setAuthorName(bookings.get(1).getBooker().getName());
-        comment.setCreated(LocalDateTime.now());
+        comment.setAuthorName(bookings.get(0).getBooker().getName());
+        comment.setCreated(localDateTime);
 
         return commentRepository.save(comment);
     }

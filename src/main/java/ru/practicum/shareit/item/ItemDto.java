@@ -22,7 +22,7 @@ public class ItemDto {
     private String description;
     @NotNull
     private Boolean available;
-    private String request;
+    private Long requestId;
 
     private BookingForItemDto lastBooking;
     private BookingForItemDto nextBooking;

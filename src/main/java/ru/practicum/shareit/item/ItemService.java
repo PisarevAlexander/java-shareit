@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import ru.practicum.shareit.comment.Comment;
 import ru.practicum.shareit.comment.CommentDto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ItemService {
@@ -13,11 +14,11 @@ public interface ItemService {
 
     Item getItemById(long itemId);
 
-    List<ItemDto> getAll(long userId);
+    List<ItemDto> getAll(long userId, int from, int size);
 
     Item update(ItemDto itemDto, long itemId, long userId);
 
-    List<Item> search(String text);
+    List<Item> search(String text, int from, int size);
 
-    Comment saveCommit(CommentDto commentDto, long itemId, long userId);
+    Comment saveCommit(CommentDto commentDto, long itemId, long userId, LocalDateTime localDateTime);
 }

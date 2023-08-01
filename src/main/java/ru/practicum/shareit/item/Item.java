@@ -27,8 +27,9 @@ public class Item {
     private boolean available;
 
     @Column(name = "owner_id")
-    private long owner;
+    private Long owner;
 
     @Column(name = "request_id")
-    private String request;
+    private Long requestId;
+
 }
