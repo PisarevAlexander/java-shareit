@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.practicum.shareit.booking.BookingForItemDto;
 import ru.practicum.shareit.comment.CommentDto;
+import ru.practicum.shareit.exception.ErrorHandler;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -42,6 +43,7 @@ class ItemControllerIntegrationTest {
     void setUp() {
         mvc = MockMvcBuilders
                 .standaloneSetup(itemController)
+                .setControllerAdvice(new ErrorHandler())
                 .build();
 
         itemDto = new ItemDto(1L, "test", "description", true, 1L,
