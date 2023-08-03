@@ -102,6 +102,7 @@ class ItemServiceImplTest {
 
         assertEquals(itemDto, actualItem);
     }
+
     @Test
     void getItemDtoById_WhereStatusApproved_AndGetNextBooking() {
         booking.setStart(LocalDateTime.now().plusDays(3));
