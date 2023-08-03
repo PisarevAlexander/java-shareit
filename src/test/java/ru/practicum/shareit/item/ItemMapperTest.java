@@ -13,8 +13,21 @@ class ItemMapperTest {
     private static ItemMapper itemMapper;
 
     @Test
-    void toItemDto() {
+    void toItemDtoWithNotNullRequest() {
         Item item = new Item(1L, "test", "description", true, 1L, 1L);
+
+        ItemDto actualItemDto = ItemMapper.toItemDto(item);
+
+        assertEquals(item.getId(), actualItemDto.getId());
+        assertEquals(item.getName(), actualItemDto.getName());
+        assertEquals(item.getDescription(), actualItemDto.getDescription());
+        assertEquals(item.isAvailable(), actualItemDto.getAvailable());
+        assertEquals(item.getRequestId(), actualItemDto.getRequestId());
+    }
+
+    @Test
+    void toItemDtoWithNullRequest() {
+        Item item = new Item(1L, "test", "description", true, 1L, null);
 
         ItemDto actualItemDto = ItemMapper.toItemDto(item);
 
