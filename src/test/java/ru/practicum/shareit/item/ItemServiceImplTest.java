@@ -11,11 +11,13 @@ import ru.practicum.shareit.booking.*;
 import ru.practicum.shareit.comment.Comment;
 import ru.practicum.shareit.comment.CommentDto;
 import ru.practicum.shareit.comment.CommentRepository;
+import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 
 import java.time.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,7 +71,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void getItemDtoById() {
+    void getItemDtoById_WhereStatusApproved_GetLastBooking() {
         when(itemRepository.findItemById(1L))
                 .thenReturn(Optional.of(item));
         when(bookingRepository.findAllByItem_IdAndItem_OwnerAndStatus(1L, 1L, Status.APPROVED))
@@ -79,6 +81,39 @@ class ItemServiceImplTest {
         itemDto.setComments(List.of(comment));
         itemDto.setLastBooking(BookingMapper.bookingForItemDto(booking));
 
+
+        ItemDto actualItem = itemService.getItemDtoById(1L, 1L);
+
+        assertEquals(itemDto, actualItem);
+    }
+
+    @Test
+    void getItemDtoById_WhereStatusRejected() {
+        booking.setStatus(Status.REJECTED);
+        when(itemRepository.findItemById(1L))
+                .thenReturn(Optional.of(item));
+        when(bookingRepository.findAllByItem_IdAndItem_OwnerAndStatus(1L, 1L, Status.APPROVED))
+                .thenReturn(new ArrayList<>());
+        when(commentRepository.findAllByItem_Id(1L))
+                .thenReturn(List.of(comment));
+        itemDto.setComments(List.of(comment));
+
+        ItemDto actualItem = itemService.getItemDtoById(1L, 1L);
+
+        assertEquals(itemDto, actualItem);
+    }
+    @Test
+    void getItemDtoById_WhereStatusApproved_AndGetNextBooking() {
+        booking.setStart(LocalDateTime.now().plusDays(3));
+        booking.setEnd(LocalDateTime.now().plusDays(5));
+        when(itemRepository.findItemById(1L))
+                .thenReturn(Optional.of(item));
+        when(bookingRepository.findAllByItem_IdAndItem_OwnerAndStatus(1L, 1L, Status.APPROVED))
+                .thenReturn(List.of(booking));
+        when(commentRepository.findAllByItem_Id(1L))
+                .thenReturn(List.of(comment));
+        itemDto.setComments(List.of(comment));
+        itemDto.setNextBooking(BookingMapper.bookingForItemDto(booking));
 
         ItemDto actualItem = itemService.getItemDtoById(1L, 1L);
 
@@ -144,7 +179,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void search() {
+    void search_WhenTextNotNull() {
         when(itemRepository
                 .findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableTrue("test",
                         "test", new OffsetBasedPageRequest(1, 1)))
@@ -156,7 +191,14 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void saveCommit() {
+    void search_WhenTextNull() {
+        List<Item> items = itemService.search("", 1, 1);
+
+        assertEquals(List.of(), items);
+    }
+
+    @Test
+    void saveCommit_WhereBookingsNotEmpty() {
         CommentDto commentDto = new CommentDto("comment");
         LocalDateTime time = LocalDateTime.now();
         comment.setCreated(time);
@@ -172,5 +214,20 @@ class ItemServiceImplTest {
         Comment actualComment = itemService.saveCommit(commentDto, 1L, 1L, time);
 
         assertEquals(comment, actualComment);
+    }
+
+    @Test
+    void saveCommit_WhereBookingsEmpty() {
+        CommentDto commentDto = new CommentDto("comment");
+        LocalDateTime time = LocalDateTime.now();
+        comment.setCreated(time);
+        comment.setId(null);
+        comment.setAuthorName("test");
+        when(itemRepository.findItemById(1L))
+                .thenReturn(Optional.of(item));
+        when(bookingRepository.findBookingByBooker_IdAndItem_IdAndAndEndBefore(1, 1, time))
+                .thenReturn(List.of());
+
+        assertThrows(BadRequestException.class, () -> itemService.saveCommit(commentDto, 1L, 1L, time));
     }
 }
