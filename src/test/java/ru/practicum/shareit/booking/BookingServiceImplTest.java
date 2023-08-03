@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.Item;
@@ -115,7 +116,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getAllUserBooking_WhereStateWaiting() {
+    void getAllUserBooking_WhereStateWaiting_ReturnListOfBooking() {
         when(userService.getById(2L))
                 .thenReturn(user2);
         when(bookingRepository
@@ -128,7 +129,60 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getAllUserBooking_WhereStateRejected() {
+    void getAllUserBooking_WhereStateALL_ReturnListOfBooking() {
+        when(userService.getById(2L))
+                .thenReturn(user2);
+        when(bookingRepository
+                .findAllByBooker_IdOrderByStartDesc(anyLong(), any(Pageable.class)))
+                .thenReturn(List.of(booking));
+
+        List<Booking> bookings = bookingService.getAllUserBooking(2L, "ALL", 1, 1);
+
+        assertEquals(List.of(booking), bookings);
+    }
+
+    @Test
+    void getAllUserBooking_WhereStateCURRENT_ReturnListOfBooking() {
+        when(userService.getById(2L))
+                .thenReturn(user2);
+        when(bookingRepository
+                .findAllByBooker_IdAndStartBeforeAndEndAfterOrderByStartDesc(anyLong(),
+                        any(LocalDateTime.class), any(LocalDateTime.class)))
+                .thenReturn(List.of(booking));
+
+        List<Booking> bookings = bookingService.getAllUserBooking(2L, "CURRENT", 1, 1);
+
+        assertEquals(List.of(booking), bookings);
+    }
+
+    @Test
+    void getAllUserBooking_WhereStatePAST_ReturnListOfBooking() {
+        when(userService.getById(2L))
+                .thenReturn(user2);
+        when(bookingRepository
+                .findAllByBooker_IdAndEndBeforeOrderByStartDesc(anyLong(), any(LocalDateTime.class)))
+                .thenReturn(List.of(booking));
+
+        List<Booking> bookings = bookingService.getAllUserBooking(2L, "PAST", 1, 1);
+
+        assertEquals(List.of(booking), bookings);
+    }
+
+    @Test
+    void getAllUserBooking_WhereStateFUTURE_ReturnListOfBooking() {
+        when(userService.getById(2L))
+                .thenReturn(user2);
+        when(bookingRepository
+                .findAllByBooker_IdAndStartAfterOrderByStartDesc(anyLong(), any(LocalDateTime.class)))
+                .thenReturn(List.of(booking));
+
+        List<Booking> bookings = bookingService.getAllUserBooking(2L, "FUTURE", 1, 1);
+
+        assertEquals(List.of(booking), bookings);
+    }
+
+    @Test
+    void getAllUserBooking_WhereStateRejected_ReturnListOfBooking() {
         when(userService.getById(2L))
                 .thenReturn(user2);
         when(bookingRepository
@@ -141,7 +195,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getAllUserBooking_WhereStateNotValid() {
+    void getAllUserBooking_WhereStateNotValid_ReturnException() {
         when(userService.getById(2L))
                 .thenReturn(user2);
 
@@ -149,7 +203,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getAllOwnerBooking_WhereStateWaiting() {
+    void getAllOwnerBooking_WhereStateWaiting_ReturnListOfBooking() {
         when(userService.getById(2L))
                 .thenReturn(user2);
         when(bookingRepository
@@ -162,7 +216,60 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getAllOwnerBooking_WhereStateRejected() {
+    void getAllOwnerBooking_WhereStateAll_ReturnListOfBooking() {
+        when(userService.getById(2L))
+                .thenReturn(user2);
+        when(bookingRepository
+                .findAllByItem_OwnerOrderByStartDesc(anyLong(), any(Pageable.class)))
+                .thenReturn(List.of(booking));
+
+        List<Booking> bookings = bookingService.getAllOwnerBooking(2L, "ALL", 1, 1);
+
+        assertEquals(List.of(booking), bookings);
+    }
+
+    @Test
+    void getAllOwnerBooking_WhereStateCURRENT_ReturnListOfBooking() {
+        when(userService.getById(2L))
+                .thenReturn(user2);
+        when(bookingRepository
+                .findAllByItem_OwnerAndStartBeforeAndEndAfterOrderByStartDesc(anyLong(),
+                        any(LocalDateTime.class), any(LocalDateTime.class)))
+                .thenReturn(List.of(booking));
+
+        List<Booking> bookings = bookingService.getAllOwnerBooking(2L, "CURRENT", 1, 1);
+
+        assertEquals(List.of(booking), bookings);
+    }
+
+    @Test
+    void getAllOwnerBooking_WhereStatePAST_ReturnListOfBooking() {
+        when(userService.getById(2L))
+                .thenReturn(user2);
+        when(bookingRepository
+                .findAllByItem_OwnerAndEndBeforeOrderByStartDesc(anyLong(), any(LocalDateTime.class)))
+                .thenReturn(List.of(booking));
+
+        List<Booking> bookings = bookingService.getAllOwnerBooking(2L, "PAST", 1, 1);
+
+        assertEquals(List.of(booking), bookings);
+    }
+
+    @Test
+    void getAllOwnerBooking_WhereStateFUTURE_ReturnListOfBooking() {
+        when(userService.getById(2L))
+                .thenReturn(user2);
+        when(bookingRepository
+                .findAllByItem_OwnerAndStartAfterOrderByStartDesc(anyLong(), any(LocalDateTime.class)))
+                .thenReturn(List.of(booking));
+
+        List<Booking> bookings = bookingService.getAllOwnerBooking(2L, "FUTURE", 1, 1);
+
+        assertEquals(List.of(booking), bookings);
+    }
+
+    @Test
+    void getAllOwnerBooking_WhereStateRejected_ReturnListOfBooking() {
         when(userService.getById(2L))
                 .thenReturn(user2);
         when(bookingRepository
@@ -175,7 +282,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getAllOwnerBooking_WhereStateNotValid() {
+    void getAllOwnerBooking_WhereStateNotValid_ReturnException() {
         when(userService.getById(2L))
                 .thenReturn(user2);
 
