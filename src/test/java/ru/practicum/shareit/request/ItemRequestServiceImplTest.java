@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -88,6 +89,35 @@ class ItemRequestServiceImplTest {
                 .thenReturn(user);
         when(itemRequestRepository.findAllByUserNot(1L, pageable))
                 .thenReturn(new PageImpl<>(List.of(itemRequest)));
+        itemRequestDto.setItems(new ArrayList<>());
+
+        List<ItemRequestDto> requests = itemRequestService.getAllWithSize(0, 1, 1L);
+
+        assertEquals(List.of(itemRequestDto), requests);
+    }
+
+    @Test
+    void getAllWithSize_WhenItemsRequestEmpty() {
+        Pageable pageable = new OffsetBasedPageRequest(0, 1, Sort.by("created").descending());
+        when(userService.getById(1L))
+                .thenReturn(user);
+        when(itemRequestRepository.findAllByUserNot(1L, pageable))
+                .thenReturn(new PageImpl<>(List.of()));
+
+        List<ItemRequestDto> requests = itemRequestService.getAllWithSize(0, 1, 1L);
+
+        assertEquals(new ArrayList<>(), requests);
+    }
+
+    @Test
+    void getAllWithSize_WhenItemsEmpty() {
+        Pageable pageable = new OffsetBasedPageRequest(0, 1, Sort.by("created").descending());
+        when(userService.getById(1L))
+                .thenReturn(user);
+        when(itemRequestRepository.findAllByUserNot(1L, pageable))
+                .thenReturn(new PageImpl<>(List.of(itemRequest)));
+        when(itemRepository.findAllByRequestIdIn(anyList()))
+                .thenReturn(List.of(item));
         itemRequestDto.setItems(new ArrayList<>());
 
         List<ItemRequestDto> requests = itemRequestService.getAllWithSize(0, 1, 1L);
