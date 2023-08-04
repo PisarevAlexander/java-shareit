@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -98,7 +99,7 @@ class ItemRequestControllerIntegrationTest {
 
     @Test
     void findRequest() throws Exception {
-        when(itemRequestService.getAllWithSize(1, 1, 1L))
+        when(itemRequestService.getAll(any(Pageable.class), anyLong()))
                 .thenReturn(List.of(itemRequestDto));
 
         mvc.perform(get("/requests/all")

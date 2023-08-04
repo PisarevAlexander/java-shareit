@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -87,11 +87,12 @@ class ItemRequestServiceImplTest {
         Pageable pageable = new OffsetBasedPageRequest(0, 1, Sort.by("created").descending());
         when(userService.getById(1L))
                 .thenReturn(user);
-        when(itemRequestRepository.findAllByUserNot(1L, pageable))
+        when(itemRequestRepository.findAllByUserNot(anyLong(), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(List.of(itemRequest)));
         itemRequestDto.setItems(new ArrayList<>());
 
-        List<ItemRequestDto> requests = itemRequestService.getAllWithSize(0, 1, 1L);
+        List<ItemRequestDto> requests = itemRequestService
+                .getAll(new OffsetBasedPageRequest(1, 1, Sort.by("created").descending()), 1L);
 
         assertEquals(List.of(itemRequestDto), requests);
     }
@@ -101,10 +102,11 @@ class ItemRequestServiceImplTest {
         Pageable pageable = new OffsetBasedPageRequest(0, 1, Sort.by("created").descending());
         when(userService.getById(1L))
                 .thenReturn(user);
-        when(itemRequestRepository.findAllByUserNot(1L, pageable))
+        when(itemRequestRepository.findAllByUserNot(anyLong(), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(List.of()));
 
-        List<ItemRequestDto> requests = itemRequestService.getAllWithSize(0, 1, 1L);
+        List<ItemRequestDto> requests = itemRequestService
+                .getAll(new OffsetBasedPageRequest(1, 1, Sort.by("created").descending()), 1L);
 
         assertEquals(new ArrayList<>(), requests);
     }
@@ -114,13 +116,14 @@ class ItemRequestServiceImplTest {
         Pageable pageable = new OffsetBasedPageRequest(0, 1, Sort.by("created").descending());
         when(userService.getById(1L))
                 .thenReturn(user);
-        when(itemRequestRepository.findAllByUserNot(1L, pageable))
+        when(itemRequestRepository.findAllByUserNot(anyLong(), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(List.of(itemRequest)));
         when(itemRepository.findAllByRequestIdIn(anyList()))
                 .thenReturn(List.of(item));
         itemRequestDto.setItems(new ArrayList<>());
 
-        List<ItemRequestDto> requests = itemRequestService.getAllWithSize(0, 1, 1L);
+        List<ItemRequestDto> requests = itemRequestService
+                .getAll(new OffsetBasedPageRequest(1, 1, Sort.by("created").descending()), 1L);
 
         assertEquals(List.of(itemRequestDto), requests);
     }

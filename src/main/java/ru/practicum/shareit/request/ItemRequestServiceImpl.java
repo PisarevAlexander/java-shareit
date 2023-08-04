@@ -50,10 +50,9 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ItemRequestDto> getAllWithSize(int from, int size, long userId) {
+    public List<ItemRequestDto> getAll(Pageable pageable, long userId) {
         userService.getById(userId);
 
-        Pageable pageable = new OffsetBasedPageRequest(from, size, Sort.by("created").descending());
         Page<ItemRequest> requests = itemRequestRepository.findAllByUserNot(userId, pageable);
         List<ItemRequest> itemRequests = requests.getContent();
 
@@ -79,31 +78,31 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     private List<ItemRequestDto> getItemRequests(List<ItemRequest> itemRequests) {
-        if (!itemRequests.isEmpty()) {
-            List<Long> requestIds = itemRequests.stream()
-                    .map(ItemRequest::getId)
-                    .collect(Collectors.toList());
+        if (itemRequests.isEmpty()) {
+            return new ArrayList<>();
+        }
 
-            List<Item> items = itemRepository.findAllByRequestIdIn(requestIds);
+        List<Long> requestIds = itemRequests.stream()
+                .map(ItemRequest::getId)
+                .collect(Collectors.toList());
 
-            List<ItemRequestDto> itemRequestDtos = itemRequests.stream()
-                    .map(ItemRequestMapper::toItemRequestDto)
-                    .collect(Collectors.toList());
+        List<Item> items = itemRepository.findAllByRequestIdIn(requestIds);
 
-            for (ItemRequestDto itemRequestDto : itemRequestDtos) {
-                itemRequestDto.setItems(new ArrayList<>());
+        List<ItemRequestDto> itemRequestDtos = itemRequests.stream()
+                .map(ItemRequestMapper::toItemRequestDto)
+                .collect(Collectors.toList());
 
-                if (!items.isEmpty()) {
-                    for (Item item : items) {
-                        if (item.getRequestId().equals(itemRequestDto.getId())) {
-                            itemRequestDto.addRequestItem(ItemMapper.toItemForRequestDto(item));
-                        }
+        for (ItemRequestDto itemRequestDto : itemRequestDtos) {
+            itemRequestDto.setItems(new ArrayList<>());
+
+            if (!items.isEmpty()) {
+                for (Item item : items) {
+                    if (item.getRequestId().equals(itemRequestDto.getId())) {
+                        itemRequestDto.addRequestItem(ItemMapper.toItemForRequestDto(item));
                     }
                 }
             }
-            return itemRequestDtos;
         }
-        return new ArrayList<>();
+        return itemRequestDtos;
     }
-
 }

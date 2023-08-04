@@ -6,12 +6,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import ru.practicum.shareit.OffsetBasedPageRequest;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,10 +52,11 @@ class ItemRequestControllerTest {
 
     @Test
     void findRequest() {
-        when(itemRequestService.getAllWithSize(1, 1, itemRequest.getUser()))
+        when(itemRequestService.getAll(any(Pageable.class), anyLong()))
                 .thenReturn(List.of(itemRequestDto));
 
-        List<ItemRequestDto> requestDtos = itemRequestController.findRequest(1, 1, itemRequest.getUser());
+        List<ItemRequestDto> requestDtos = itemRequestController
+                .findRequest(1, 1,1L);
 
         assertEquals(List.of(itemRequestDto), requestDtos);
     }
