@@ -8,7 +8,7 @@ public class ItemMapper {
         itemDto.setName(item.getName());
         itemDto.setDescription(item.getDescription());
         itemDto.setAvailable(item.isAvailable());
-        itemDto.setRequest(item.getRequest() != null ? item.getRequest() : null);
+        itemDto.setRequestId(item.getRequestId() != null ? item.getRequestId() : null);
         return itemDto;
     }
 
@@ -17,7 +17,17 @@ public class ItemMapper {
         item.setName(itemDto.getName());
         item.setDescription(itemDto.getDescription());
         item.setAvailable(itemDto.getAvailable());
-        item.setRequest(itemDto.getRequest());
+        item.setRequestId(itemDto.getRequestId());
         return item;
+    }
+
+    public static ItemForRequestDto toItemForRequestDto(Item item) {
+        ItemForRequestDto itemForRequestDto = new ItemForRequestDto();
+                itemForRequestDto.setId(item.getId());
+                itemForRequestDto.setName(item.getName());
+                itemForRequestDto.setDescription(item.getDescription());
+                itemForRequestDto.setAvailable(item.isAvailable());
+                itemForRequestDto.setRequestId(item.getRequestId());
+        return itemForRequestDto;
     }
 }

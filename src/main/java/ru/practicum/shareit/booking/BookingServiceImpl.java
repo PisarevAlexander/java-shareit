@@ -1,8 +1,10 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.OffsetBasedPageRequest;
 import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.Item;
@@ -72,12 +74,13 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Booking> getAllUserBooking(long userId, String state) {
+    public List<Booking> getAllUserBooking(long userId, String state, int from, int size) {
         userService.getById(userId);
 
         switch (state) {
             case "ALL":
-                return bookingRepository.findAllByBooker_IdOrderByStartDesc(userId);
+                Pageable pageable = new OffsetBasedPageRequest(from, size);
+                return bookingRepository.findAllByBooker_IdOrderByStartDesc(userId, pageable);
             case "CURRENT":
                 return bookingRepository.findAllByBooker_IdAndStartBeforeAndEndAfterOrderByStartDesc(userId,
                         LocalDateTime.now(), LocalDateTime.now());
@@ -96,12 +99,13 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Booking> getAllOwnerBooking(long userId, String state) {
+    public List<Booking> getAllOwnerBooking(long userId, String state, int from, int size) {
         userService.getById(userId);
 
         switch (state) {
             case "ALL":
-                return bookingRepository.findAllByItem_OwnerOrderByStartDesc(userId);
+                Pageable pageable = new OffsetBasedPageRequest(from, size);
+                return bookingRepository.findAllByItem_OwnerOrderByStartDesc(userId, pageable);
             case "CURRENT":
                 return bookingRepository.findAllByItem_OwnerAndStartBeforeAndEndAfterOrderByStartDesc(userId,
                         LocalDateTime.now(), LocalDateTime.now());
