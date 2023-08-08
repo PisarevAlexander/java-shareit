@@ -39,4 +39,11 @@ public class ErrorHandler {
                 "error", e.getMessage()
         );
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBadRequestException(final BadRequestException e) {
+        log.warn(e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
 }

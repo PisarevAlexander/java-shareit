@@ -2,14 +2,14 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
+import ru.practicum.shareit.exception.BadRequestException;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -26,6 +26,9 @@ public class BookingController {
     @PostMapping
     public ResponseEntity<Object> bookItem(@RequestHeader("X-Sharer-User-Id") long userId,
                                            @RequestBody @Valid BookItemRequestDto requestDto) {
+        if (requestDto.getStart().isAfter(requestDto.getEnd()) || requestDto.getStart().equals(requestDto.getEnd())) {
+            throw new BadRequestException("Время начала не может быть позже окончания");
+        }
         log.info("Creating booking {}, userId={}", requestDto, userId);
         return bookingClient.bookItem(userId, requestDto);
     }

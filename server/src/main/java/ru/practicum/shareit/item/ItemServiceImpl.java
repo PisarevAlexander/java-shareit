@@ -20,6 +20,7 @@ import ru.practicum.shareit.user.UserService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -90,9 +91,11 @@ public class ItemServiceImpl implements ItemService {
         List<ItemDto> itemsDto = new ArrayList<>();
         Pageable pageable = new OffsetBasedPageRequest(from, size);
         List<Item> items = itemRepository.findAllByOwner(userId, pageable);
+
         for (Item item : items) {
             itemsDto.add(ItemMapper.toItemDto(item));
         }
+
         List<Booking> bookings = bookingRepository.findAllByItem_OwnerAndStatus(userId, Status.APPROVED);
         List<Comment> comments = commentRepository.findAll();
         LocalDateTime localDateTime = LocalDateTime.now();
