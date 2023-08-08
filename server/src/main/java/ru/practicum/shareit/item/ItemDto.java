@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 import ru.practicum.shareit.booking.BookingForItemDto;
 import ru.practicum.shareit.comment.Comment;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
