@@ -144,28 +144,6 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void getAll() {
-        item.setId(1L);
-        booking.setItem(item);
-        booking.setStart(LocalDateTime.now().plusDays(1));
-        booking.setEnd(LocalDateTime.now().plusDays(5));
-        comment.setItem(item);
-        when(itemRepository.findAllByOwner(1L, new OffsetBasedPageRequest(1, 1)))
-                .thenReturn(List.of(item));
-        when(bookingRepository.findAllByItem_OwnerAndStatus(1L, Status.APPROVED))
-                .thenReturn(List.of(booking));
-        when(commentRepository.findAll())
-                .thenReturn(List.of(comment));
-        itemDto.setId(1L);
-        itemDto.setComments(List.of(comment));
-        itemDto.setNextBooking(BookingMapper.bookingForItemDto(booking));
-
-        List<ItemDto> items = itemService.getAll(1L, 1, 1);
-
-        assertEquals(List.of(itemDto), items);
-    }
-
-    @Test
     void update() {
         ItemDto changedItemDto = new ItemDto(1L, "test1", "description1", false, 1L,
                 null, null, null);

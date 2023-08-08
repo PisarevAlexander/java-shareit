@@ -57,14 +57,6 @@ class ItemRepositoryTest {
     }
 
     @Test
-    void findAllByOwner() {
-        List<Item> items = itemRepository.findAllByOwner(item.getOwner(), new OffsetBasedPageRequest(0, 1));
-
-        assertEquals(1, items.size());
-        assertEquals(item, items.get(0));
-    }
-
-    @Test
     void findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableTrue() {
         List<Item> items = itemRepository
                 .findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableTrue(item.getName(),

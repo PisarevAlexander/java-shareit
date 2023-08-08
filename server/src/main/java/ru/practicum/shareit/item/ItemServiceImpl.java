@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
@@ -89,11 +92,13 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDto> getAll(long userId, int from, int size) {
         List<ItemDto> itemsDto = new ArrayList<>();
         Pageable pageable = new OffsetBasedPageRequest(from, size);
-        List<Item> items = itemRepository.findAllByOwner(userId, pageable);
+        List<Item> items = itemRepository.findAllByOwnerOrderById(userId, pageable).getContent();
 
         for (Item item : items) {
             itemsDto.add(ItemMapper.toItemDto(item));
         }
+
+        log.info(itemsDto.toString());
 
         List<Booking> bookings = bookingRepository.findAllByItem_OwnerAndStatus(userId, Status.APPROVED);
         List<Comment> comments = commentRepository.findAll();
