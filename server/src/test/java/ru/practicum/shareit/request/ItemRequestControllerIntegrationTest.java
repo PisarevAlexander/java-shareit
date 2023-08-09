@@ -44,7 +44,6 @@ class ItemRequestControllerIntegrationTest {
         mvc = MockMvcBuilders
                 .standaloneSetup(itemRequestController)
                 .build();
-        
         itemRequestDto = new ItemRequestDto(1L, "description",
                 LocalDateTime.now(), new ArrayList<>());
         mapper.registerModule(new JavaTimeModule());
