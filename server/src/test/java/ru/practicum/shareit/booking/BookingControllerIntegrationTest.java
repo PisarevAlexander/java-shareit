@@ -38,7 +38,6 @@ class BookingControllerIntegrationTest {
     private MockMvc mvc;
     private Booking booking;
     private BookingDto bookingDto;
-    private LocalDateTime time;
 
     @BeforeEach
     void setUp() {
@@ -47,7 +46,7 @@ class BookingControllerIntegrationTest {
                 .setControllerAdvice(new ErrorHandler())
                 .build();
 
-        time = LocalDateTime.now();
+        LocalDateTime time = LocalDateTime.now();
         booking = new Booking(1L, time.plusDays(1), time.plusDays(10),
                 new Item(1L, "test", "description", true, 1L, 1L),
                 new User(1, "test", "test@gmail.com"), Status.APPROVED);

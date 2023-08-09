@@ -41,11 +41,10 @@ class BookingServiceImplTest {
     private BookingDto bookingDto;
     private User user2;
     private Item item;
-    private LocalDateTime time;
 
     @BeforeEach
     public void setUp() {
-        time = LocalDateTime.now();
+        LocalDateTime time = LocalDateTime.now();
         User user1 = new User(1L, "test", "test@gmail.com");
         user2 = new User(2L, "test1", "test1@gmail.com");
         item = new Item(1L, "test", "description", true, user1.getId(), null);

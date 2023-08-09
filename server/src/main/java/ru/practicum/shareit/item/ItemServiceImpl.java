@@ -173,7 +173,7 @@ public class ItemServiceImpl implements ItemService {
     public Comment saveCommit(CommentDto commentDto, long itemId, long userId, LocalDateTime localDateTime) {
         Item item = itemRepository.findItemById(itemId)
                 .orElseThrow(() -> new NotFoundException("Предмета с id " + itemId + " не существует"));
-        List<Booking> bookings = bookingRepository.findBookingByBooker_IdAndItem_IdAndAndEndBefore(userId, itemId,
+        List<Booking> bookings = bookingRepository.findBookingByBooker_IdAndItem_IdAndEndBefore(userId, itemId,
                 localDateTime);
 
         if (bookings.isEmpty()) {

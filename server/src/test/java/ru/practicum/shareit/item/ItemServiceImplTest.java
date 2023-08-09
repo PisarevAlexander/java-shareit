@@ -189,7 +189,7 @@ class ItemServiceImplTest {
         comment.setAuthorName("test");
         when(itemRepository.findItemById(1L))
                 .thenReturn(Optional.of(item));
-        when(bookingRepository.findBookingByBooker_IdAndItem_IdAndAndEndBefore(1, 1, time))
+        when(bookingRepository.findBookingByBooker_IdAndItem_IdAndEndBefore(1, 1, time))
                 .thenReturn(List.of(booking));
         when(commentRepository.save(comment))
                 .thenReturn(comment);
@@ -208,7 +208,7 @@ class ItemServiceImplTest {
         comment.setAuthorName("test");
         when(itemRepository.findItemById(1L))
                 .thenReturn(Optional.of(item));
-        when(bookingRepository.findBookingByBooker_IdAndItem_IdAndAndEndBefore(1, 1, time))
+        when(bookingRepository.findBookingByBooker_IdAndItem_IdAndEndBefore(1, 1, time))
                 .thenReturn(List.of());
 
         assertThrows(BadRequestException.class, () -> itemService.saveCommit(commentDto, 1L, 1L, time));

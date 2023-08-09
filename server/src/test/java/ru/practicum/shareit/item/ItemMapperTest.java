@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 
@@ -9,8 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ItemMapperTest {
 
-    @Autowired
-    private static ItemMapper itemMapper;
 
     @Test
     void toItemDtoWithNotNullRequest() {

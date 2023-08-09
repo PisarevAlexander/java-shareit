@@ -28,11 +28,10 @@ class ItemRequestControllerTest {
 
     private ItemRequest itemRequest;
     private ItemRequestDto itemRequestDto;
-    LocalDateTime time;
 
     @BeforeEach
     void setUp() {
-        time = LocalDateTime.now();
+        LocalDateTime time = LocalDateTime.now();
         itemRequest = new ItemRequest(1L, "description", 1L, time);
         itemRequestDto = new ItemRequestDto(1L, "description",
                 time, new ArrayList<>());

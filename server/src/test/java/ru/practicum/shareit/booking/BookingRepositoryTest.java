@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import ru.practicum.shareit.OffsetBasedPageRequest;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemRepository;
-import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
@@ -28,8 +27,6 @@ class BookingRepositoryTest {
     private ItemRepository itemRepository;
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private ItemRequestRepository requestRepository;
 
     private Booking booking;
     private User user2;
@@ -54,7 +51,6 @@ class BookingRepositoryTest {
         itemRepository.deleteAll();
         bookingRepository.deleteAll();
     }
-
 
     @Test
     void findBookingById() {
@@ -163,7 +159,7 @@ class BookingRepositoryTest {
     @Test
     void findBookingByBooker_IdAndItem_IdAndAndEndBefore() {
         List<Booking> bookings = bookingRepository
-                .findBookingByBooker_IdAndItem_IdAndAndEndBefore(booking.getBooker().getId(),
+                .findBookingByBooker_IdAndItem_IdAndEndBefore(booking.getBooker().getId(),
                         booking.getItem().getId(), time.plusMonths(1));
 
         assertEquals(List.of(booking), bookings);

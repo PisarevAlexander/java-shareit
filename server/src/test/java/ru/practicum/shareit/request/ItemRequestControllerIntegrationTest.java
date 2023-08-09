@@ -37,20 +37,16 @@ class ItemRequestControllerIntegrationTest {
     private final ObjectMapper mapper = new ObjectMapper();
 
     private MockMvc mvc;
-    private ItemRequest itemRequest;
     private ItemRequestDto itemRequestDto;
-    LocalDateTime time;
 
     @BeforeEach
     void setUp() {
         mvc = MockMvcBuilders
                 .standaloneSetup(itemRequestController)
                 .build();
-
-        time = LocalDateTime.now();
-        itemRequest = new ItemRequest(1L, "description", 1L, time);
+        
         itemRequestDto = new ItemRequestDto(1L, "description",
-                time, new ArrayList<>());
+                LocalDateTime.now(), new ArrayList<>());
         mapper.registerModule(new JavaTimeModule());
     }
 

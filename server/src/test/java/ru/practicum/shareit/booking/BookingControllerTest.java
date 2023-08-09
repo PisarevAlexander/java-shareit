@@ -26,11 +26,10 @@ class BookingControllerTest {
 
     private Booking booking;
     private BookingDto bookingDto;
-    private LocalDateTime time;
 
     @BeforeEach
     void setUp() {
-        time = LocalDateTime.now();
+        LocalDateTime time = LocalDateTime.now();
         booking = new Booking(1L, time, time.plusDays(10),
                 new Item(), new User(), Status.APPROVED);
         bookingDto = new BookingDto(1L, time, time.plusDays(10));

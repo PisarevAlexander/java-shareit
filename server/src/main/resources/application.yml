@@ -17,7 +17,7 @@ spring:
         format_sql: true
     hibernate:
       ddl-auto: none
-    show-sql: true
+      show-sql: true
   h2:
     console.enabled: true
     console:
@@ -44,9 +44,10 @@ spring:
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
-    defer-datasource-initialization: true
-    generate-ddl: true
-  hibernate:
-    ddl-auto: update
-    show_sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL10Dialect
+        format_sql: true
+    hibernate:
+      ddl-auto: none
+      show-sql: true
