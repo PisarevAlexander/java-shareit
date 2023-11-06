@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: 5
+      author: Pisarev_Alexander
+      changes:
+        - createTable:
+            tableName: comments
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: text
+                  type: varchar(1000)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: item_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_comment
+                    references: items(id)
+                    deleteCascade: true
+              - column:
+                  name: author_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: timestamp without time zone
+                  constraints:
+                    nullable: false
