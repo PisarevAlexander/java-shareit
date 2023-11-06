@@ -16,7 +16,7 @@
 		<relativePath/>
 	</parent>
 
-	<groupId>ru.practicum</groupId>
+	<groupId>ru.shareit</groupId>
 	<artifactId>shareit</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
